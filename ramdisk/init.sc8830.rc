@@ -18,7 +18,6 @@ on early-init
 
 on init
     mkdir /productinfo 0771 system system
-
  # See storage config details at http://source.android.com/tech/storage/
     mkdir /mnt/media_rw/extSdCard 0700 media_rw media_rw
     mkdir /mnt/media_rw/UsbDriveA 0700 media_rw media_rw
@@ -65,8 +64,8 @@ on fs
     mount_all /fstab.sc8830
     mount pstore pstore /sys/fs/pstore
     setprop ro.crypto.fuse_sdcard true
-    symlink /system/res /res
-    symlink /system/bin /bin
+	symlink /system/res /res
+	symlink /system/bin /bin
 
 #Allow others to read fb devices
     chmod 660 /dev/graphics/fb0
@@ -177,10 +176,10 @@ on boot
 
     chown system system /sys/class/graphics/fb0/dynamic_mipi_clk
 
-#on charger
-#    class_start core
-#    start console
-#    start slog
+on charger
+    class_start core
+    start console
+    start slog
 
 service poweroffalarm /system/bin/poweroff_alarm
     disabled
@@ -253,11 +252,8 @@ on property:ro.modem.w.count=3
     write /proc/sim/1 w
     write /proc/sim/2 w
 
-on property:ro.config.ksm.support=true
-    write /sys/kernel/mm/ksm/pages_to_scan 100
-    write /sys/kernel/mm/ksm/sleep_millisecs 500
+on property:sys.boot_completed=1
     write /sys/kernel/mm/ksm/run   1
-
 
 # SPRD: add for theme setting @{
 on property:universe_ui_support=true
@@ -307,7 +303,6 @@ service fuse_UsbDriveE /system/bin/sdcard -u 1023 -g 1023 -d  /mnt/media_rw/UsbD
 service fuse_UsbDriveF /system/bin/sdcard -u 1023 -g 1023 -d  /mnt/media_rw/UsbDriveF /storage/UsbDriveF
     class late_start
     disabled
-
 #modem_control
 service modem_control  /system/bin/modem_control
     class core
@@ -348,10 +343,10 @@ service batterysrv /bin/batterysrv
     group system 
     oneshot
 
-#service charge /bin/charge
- #   class charger
- #   user root
- #   oneshot
+service charge /bin/charge
+    class charger
+    user root
+    oneshot
 
 #nvitemd
 service nvitemd_td /system/bin/nvitemd t 0
@@ -381,18 +376,18 @@ service slog /system/bin/slog -t
     group system shell radio log sdcard_r sdcard_rw
 
 service refnotify_td /system/bin/refnotify -t 0
-    class main
+    class core
     user system
-	group system
+    group system
     disabled
 
 service refnotify_w /system/bin/refnotify -t 1
-    class main
+    class core
     user system
     group system
 
 service refnotify_l /system/bin/refnotify -t 2
-    class main
+    class core
     user system
     group system
     disabled
