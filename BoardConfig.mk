@@ -110,8 +110,8 @@ COMMON_GLOBAL_CFLAGS += -DSPRD_HARDWARE
 
 
 # Kernel
-TARGET_PREBUILT_KERNEL   := /device/samsung/j1pop3g/zImage
-TARGET_PREBUILT_DTB      := /device/samsung/j1pop3g/dt
+TARGET_PREBUILT_KERNEL   := device/samsung/j1pop3g/zImage
+TARGET_PREBUILT_DTB      := device/samsung/j1pop3g/dt
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_CMDLINE := console=ttyS1,115200n8 androidboot.selinux=permissive
 BOARD_KERNEL_PAGESIZE := 2048
