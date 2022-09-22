@@ -438,12 +438,18 @@ on property:sys.init_log_level=*
     loglevel ${sys.init_log_level}
 
 on charger
-    mount ext4 /dev/block/mmcblk0p23 /system ro,barrier=1 wait
-    exec sfsck /dev/block/mmcblk0p25 ext4
-    mount ext4 /dev/block/mmcblk0p25 /data noatime,nosuid,nodev,nomblk_io_submit wait,encryptable=footer,check
-    insmod /lib/modules/mali.ko
+
+    chmod 0666 /dev/log/radio
+    chmod 0666 /dev/log/main
+    chmod 0666 /dev/log/event
+
+    mount ext4 /dev/block/mmcblk0p24 /system ro,barrier=1 wait
+    exec sfsck /dev/block/mmcblk0p26 ext4
+    mount ext4 /dev/block/mmcblk0p26 /data noatime,nosuid,nodev,nomblk_io_submit wait,encryptable=footer,check
+
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor powersave
+
     class_start charger
-#    class_start charger
 
 on property:vold.decrypt=trigger_reset_main
     class_reset main
@@ -498,9 +504,10 @@ service healthd /sbin/healthd
     critical
     seclabel u:r:healthd:s0
 
-service lpm /system/bin/lpm
+service healthd-charger /charger
     class charger
     critical
+    seclabel u:r:healthd:s0
 
 service console /system/bin/sh
     class core
@@ -586,16 +593,16 @@ service media /system/bin/mediaserver
     ioprio rt 4
 
 # One shot invocation to deal with encrypted volume.
-#service defaultcrypto /system/bin/vdc --wait cryptfs mountdefaultencrypted
-#    disabled
-#    oneshot
+service defaultcrypto /system/bin/vdc --wait cryptfs mountdefaultencrypted
+    disabled
+    oneshot
     # vold will set vold.decrypt to trigger_restart_framework (default
     # encryption) or trigger_restart_min_framework (other encryption)
 
 # One shot invocation to encrypt unencrypted volumes
-#service encrypt /system/bin/vdc --wait cryptfs enablecrypto inplace default
-#    disabled
-#    oneshot
+service encrypt /system/bin/vdc --wait cryptfs enablecrypto inplace default
+    disabled
+    oneshot
     # vold will set vold.decrypt to trigger_restart_framework (default
     # encryption)
 
