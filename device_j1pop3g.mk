@@ -17,6 +17,21 @@ LOCAL_PATH := device/samsung/j1pop3g
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 $(call inherit-product, $(LOCAL_PATH)/device.mk)
 
+# TinyAlsa utils
+PRODUCT_PACKAGES += \
+    tinyplay \
+    tinycap \
+    tinymix \
+    tinypcminfo
+    
+ # Audio configuration
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/audio/audio_hw.xml:system/etc/audio_hw.xml \
+    $(LOCAL_PATH)/configs/audio/audio_para:system/etc/audio_para \
+    $(LOCAL_PATH)/configs/audio/audio_policy.conf:system/etc/audio_policy.conf \
+    $(LOCAL_PATH)/configs/audio/codec_pga.xml:system/etc/codec_pga.xml \
+    $(LOCAL_PATH)/configs/audio/tiny_hw.xml:system/etc/tiny_hw.xml
+
 # Keylayouts
 KEYLAYOUT_FILES := \
 	$(LOCAL_PATH)/keylayouts/ist30xx_ts_input.kl \
@@ -52,6 +67,8 @@ PRODUCT_PACKAGES += \
 	bt_vendor.conf
 	
 # Camera
+PRODUCT_PACKAGES += \
+    Snap
 
 # Doze
 PRODUCT_PACKAGES += \
@@ -85,7 +102,10 @@ PRODUCT_PACKAGES += \
 
 # Device-specific packages
 PRODUCT_PACKAGES += \
-	SamsungServiceMode
+	SamsungServiceMode \
+	Torch
+	
+
 
 # BT configuration
 PRODUCT_COPY_FILES += \
